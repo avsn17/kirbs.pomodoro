@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 ╔══════════════════════════════════════════════════╗
-║     🌟 COSMIC POMODORO TIMER — PERFECT EDITION   ║
+║     🌟 COSMIC POMODORO TIMER                     Kirbs
 ║         Pilot: Cosmic Kirbs | avsn17             ║
 ╚══════════════════════════════════════════════════╝
 """
