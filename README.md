@@ -110,3 +110,5 @@ Stats are saved to `~/.pomodoro_stats.json` (outside the project directory).
 ---
 
 *May your productivity journey be guided by wisdom. 🌌*
+
+<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/7e530e07-7de2-4301-8f5a-96d135ae4341" />
