@@ -35,8 +35,11 @@ chmod +x kirbs.sh
 # Install alias (add to ~/.bashrc or ~/.zshrc)
 echo "alias poyo='cd $(pwd) && python3 pomodoro_timer.py'" >> ~/.zshrc
 source ~/.zshrc
-# Then just type: poyo
-```
+
+Pomodoro by using poyo
+
+Widget by using wid 
+
 
 ---
 
