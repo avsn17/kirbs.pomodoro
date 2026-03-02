@@ -1,5 +1,5 @@
 #!/bin/bash
-# 🌸 PINK COSMIC STATION: CUTE EDITION | avsn17
+# 🌸 PINK COSMIC STATION: GHOST CLEANUP | avsn17
 cd /workspaces/kirbs.pomodoro
 
 # 1. WEBHOOK SYNC
@@ -8,18 +8,15 @@ git add music_signal.txt && git commit -m "avsn17 Session Start" --quiet && git 
 
 # 2. THE PLAYLIST
 URLS=(
-  "https://youtu.be/5XJNg8x89yo" # Lana
-  "https://youtu.be/QNJL6nfu__Q" # MJ
-  "https://youtu.be/AmXdpVnJwt8" # CAS
-  "https://youtu.be/ukgluvJpL4U" # Bee Gees
-  "https://youtu.be/9-HhuD6D_3U" # Billie
+  "https://youtu.be/5XJNg8x89yo" "https://youtu.be/QNJL6nfu__Q" 
+  "https://youtu.be/AmXdpVnJwt8" "https://youtu.be/ukgluvJpL4U" 
+  "https://youtu.be/9-HhuD6D_3U"
 )
 
 play_legend() {
     RAND_URL=${URLS[$RANDOM % ${#URLS[@]}]}
     xdg-open "$RAND_URL" &>/dev/null &
 }
-
 play_legend
 
 # 3. UI CONFIG
@@ -30,9 +27,9 @@ trap 'echo "paused" > music_signal.txt; git add music_signal.txt; git commit -m 
 
 clear
 echo -e "${PINK}╭──────────────────────────────────────────────────╮"
-echo -e "│  ✨ ${WHITE}CUTE STATION ACTIVE | avsn17     ${PINK}           │"
+echo -e "│  🧹 ${WHITE}CLEAN STATION ACTIVE | avsn17             ${PINK}│"
 echo -e "├──────────────────────────────────────────────────┤"
-echo -e "│  ${WHITE}Type 'save' to backup wid.sh & your work.      ${PINK}│"
+echo -e "│  ${WHITE}Type 'save' to clear ghosts & push to cloud.   ${PINK}│"
 echo -e "╰──────────────────────────────────────────────────╯${NC}"
 echo -e "       ${PINK}♥  ${WHITE}${KIRBYS[$RANDOM % 4]}  ${PINK}♥${NC}"
 
@@ -43,16 +40,19 @@ while true; do
     if [[ "$USER_INPUT" == "exit" ]]; then break; fi
 
     if [[ "$USER_INPUT" == "save" ]]; then
-        echo -e "${PINK}Gemini > ${WHITE}Saving wid.sh and friends...${NC}"
+        echo -e "${PINK}Gemini > ${WHITE}Cleaning ghosts and saving...${NC}"
+        
+        # This part specifically fixes the deleted .swp file issue
+        git add -u  # Stages deletions (the ghost file)
+        git add wid.sh .gitignore README.md
+        
         echo -ne "${PINK}Message: ${WHITE}"
         read -r MSG
-        if [ -z "$MSG" ]; then MSG="Aesthetic Patch for avsn17"; fi
+        if [ -z "$MSG" ]; then MSG="Cleaned ghosts for avsn17"; fi
         
-        # Specific File Save Logic
-        git add wid.sh .gitignore README.md
         git commit -m "$MSG"
         git push origin main
-        echo -e "${PINK}✅ wid.sh is safely in the cloud.${NC}"
+        echo -e "${PINK}✅ Ghosts cleared. Git is clean!${NC}"
         continue
     fi
 
