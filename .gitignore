@@ -5,3 +5,5 @@ cookies.txt
 timetodime2/
 music_history.json
 *.swp
+.vercel
+.env*.local
