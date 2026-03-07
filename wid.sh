@@ -41,10 +41,7 @@ while true; do
 
     if [[ "$USER_INPUT" == "save" ]]; then
         echo -e "${PINK}Gemini > ${WHITE}Cleaning ghosts and saving...${NC}"
-        
-        # This part specifically fixes the deleted .swp file issue
-        git add -u  # Stages deletions (the ghost file)
-        git add wid.sh .gitignore README.md
+    
         
         echo -ne "${PINK}Message: ${WHITE}"
         read -r MSG
