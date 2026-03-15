@@ -1,6 +1,4 @@
-```
-Then paste the entire file contents, then type:
-```
+
 #!/usr/bin/env python3
 """
 ╔══════════════════════════════════════════════════╗
