@@ -16,7 +16,7 @@
 - **Music signal** — writes `music_signal.txt` on completion for external autoplay integration
 - **Session auto-save** — progress logged on quit/new, not just on completion
 
----
+------------------------------
 
 ## 🚀 Quick Start
 
@@ -35,6 +35,10 @@ chmod +x kirbs.sh
 # Install alias (add to ~/.bashrc or ~/.zshrc)
 echo "alias poyo='cd $(pwd) && python3 pomodoro_timer.py'" >> ~/.zshrc
 source ~/.zshrc
+
+
+
+------------------------
 
 Pomodoro by using poyo
 
