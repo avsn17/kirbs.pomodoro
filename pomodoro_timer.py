@@ -437,7 +437,7 @@ class CosmicPomodoro:
                 self.music_enabled = not self.music_enabled
                 state_str = 'ON 🎵' if self.music_enabled else 'OFF 🔇'
                 print(f"  Music: {state_str}")
-        if self.music_enabled:
+                if self.music_enabled:
                     signal_music("PLAY_NEXT")
             elif ch == '5':
                 self._choose_color()
@@ -544,7 +544,7 @@ class CosmicPomodoro:
                     elif key == 'm':
                         # FIX 1: toggle state
                         self.music_enabled = not self.music_enabled
-        if self.music_enabled:
+                        if self.music_enabled:
                             # FIX 2: actually write the signal file when turning ON
                             signal_music("PLAY_NEXT")
                             banner_text = "🎵 MUSIC ON  — signal sent!"
