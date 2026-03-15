@@ -9,6 +9,7 @@ Then paste the entire file contents, then type:
 ╚══════════════════════════════════════════════════╝
 """
 
+from kirby_notify import notify_session_start, notify_session_end
 import os, sys, time, json, random, threading, select, signal
 import termios, tty, shutil, re
 from datetime import datetime
@@ -228,6 +229,7 @@ class CosmicPomodoro:
         self.running = False
         dist = (self.elapsed / 60) * METERS_PER_MINUTE
         self._add_session(dist, self.elapsed, completed=True)
+        notify_session_end(dist, get_rank(self._user_total_distance()))
         if self.music_enabled:
             signal_music("PLAY_NEXT")
 
@@ -502,6 +504,7 @@ class CosmicPomodoro:
                 print(f"  {C['red']}Please enter a positive integer.{C['reset']}")
 
         self._start_timer()
+        notify_session_start(self.distance_goal)
 
         # Save termios state for subscreen toggling
         self._old_termios = termios.tcgetattr(sys.stdin)
@@ -584,6 +587,7 @@ class CosmicPomodoro:
     def _finish_screen(self):
         clear()
         dist = (self.elapsed / 60) * METERS_PER_MINUTE
+        notify_session_end(dist, get_rank(self._user_total_distance()))
         print(f"\n{C['solar']}{C['bold']}  🎉 MISSION COMPLETE! 🎉{C['reset']}")
         print(f"  {C['green']}Distance covered: {dist:.0f} m{C['reset']}")
         print(f"  {C['cosmic']}New rank:  {get_rank(self._user_total_distance())}{C['reset']}")
