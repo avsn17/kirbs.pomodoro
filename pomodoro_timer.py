@@ -7,6 +7,7 @@
 ╚══════════════════════════════════════════════════╝
 """
 
+from kirby_notify import notify_session_start, notify_milestone, notify_session_end
 import os, sys, time, json, random, threading, select, signal
 import termios, tty, shutil, re
 from datetime import datetime
@@ -226,6 +227,7 @@ class CosmicPomodoro:
         self.running = False
         dist = (self.elapsed / 60) * METERS_PER_MINUTE
         self._add_session(dist, self.elapsed, completed=True)
+        notify_session_end(dist, get_rank(self._user_total_distance()))
         if self.music_enabled:
             signal_music("PLAY_NEXT")
 
@@ -435,7 +437,8 @@ class CosmicPomodoro:
                 self.music_enabled = not self.music_enabled
                 state_str = 'ON 🎵' if self.music_enabled else 'OFF 🔇'
                 print(f"  Music: {state_str}")
-                if self.music_enabled:
+                notify_session_end(dist, get_rank(self._user_total_distance()))
+        if self.music_enabled:
                     signal_music("PLAY_NEXT")
             elif ch == '5':
                 self._choose_color()
@@ -500,6 +503,7 @@ class CosmicPomodoro:
                 print(f"  {C['red']}Please enter a positive integer.{C['reset']}")
 
         self._start_timer()
+        notify_session_start(self.distance_goal)
 
         # Save termios state for subscreen toggling
         self._old_termios = termios.tcgetattr(sys.stdin)
@@ -542,7 +546,8 @@ class CosmicPomodoro:
                         # FIX 1: toggle state
                         self.music_enabled = not self.music_enabled
 
-                        if self.music_enabled:
+                        notify_session_end(dist, get_rank(self._user_total_distance()))
+        if self.music_enabled:
                             # FIX 2: actually write the signal file when turning ON
                             signal_music("PLAY_NEXT")
                             banner_text = "🎵 MUSIC ON  — signal sent!"
@@ -587,6 +592,7 @@ class CosmicPomodoro:
         print(f"  {C['cosmic']}New rank:  {get_rank(self._user_total_distance())}{C['reset']}")
         print(f"\n  💡 Break tip: {random.choice(BREAK_ADVICES)}")
         print(f"\n  ✨ {random.choice(QUOTES['kirby'])}")
+        notify_session_end(dist, get_rank(self._user_total_distance()))
         if self.music_enabled:
             signal_music("PLAY_NEXT")
             print(f"\n  🎵 Music autoplay triggered.")
