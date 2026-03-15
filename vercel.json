@@ -1,5 +1,0 @@
-{
-  "redirects": [
-    { "source": "/(.*)", "destination": "https://your-railway-url.up.railway.app/$1", "permanent": false }
-  ]
-}
