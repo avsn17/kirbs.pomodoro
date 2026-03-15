@@ -7,7 +7,7 @@
 ╚══════════════════════════════════════════════════╝
 """
 
-from kirby_notify import notify_session_start, notify_milestone, notify_session_end
+from kirby_notify import notify_session_start, notify_session_end
 import os, sys, time, json, random, threading, select, signal
 import termios, tty, shutil, re
 from datetime import datetime
@@ -437,7 +437,6 @@ class CosmicPomodoro:
                 self.music_enabled = not self.music_enabled
                 state_str = 'ON 🎵' if self.music_enabled else 'OFF 🔇'
                 print(f"  Music: {state_str}")
-                notify_session_end(dist, get_rank(self._user_total_distance()))
         if self.music_enabled:
                     signal_music("PLAY_NEXT")
             elif ch == '5':
@@ -545,8 +544,6 @@ class CosmicPomodoro:
                     elif key == 'm':
                         # FIX 1: toggle state
                         self.music_enabled = not self.music_enabled
-
-                        notify_session_end(dist, get_rank(self._user_total_distance()))
         if self.music_enabled:
                             # FIX 2: actually write the signal file when turning ON
                             signal_music("PLAY_NEXT")
@@ -587,12 +584,12 @@ class CosmicPomodoro:
     def _finish_screen(self):
         clear()
         dist = (self.elapsed / 60) * METERS_PER_MINUTE
+        notify_session_end(dist, get_rank(self._user_total_distance()))
         print(f"\n{C['solar']}{C['bold']}  🎉 MISSION COMPLETE! 🎉{C['reset']}")
         print(f"  {C['green']}Distance covered: {dist:.0f} m{C['reset']}")
         print(f"  {C['cosmic']}New rank:  {get_rank(self._user_total_distance())}{C['reset']}")
         print(f"\n  💡 Break tip: {random.choice(BREAK_ADVICES)}")
         print(f"\n  ✨ {random.choice(QUOTES['kirby'])}")
-        notify_session_end(dist, get_rank(self._user_total_distance()))
         if self.music_enabled:
             signal_music("PLAY_NEXT")
             print(f"\n  🎵 Music autoplay triggered.")
