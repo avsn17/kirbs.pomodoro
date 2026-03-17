@@ -8,3 +8,4 @@ music_history.json
 .vercel
 .env*.local
 node_modules/
+__pycache__/
