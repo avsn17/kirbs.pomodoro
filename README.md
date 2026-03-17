@@ -1,70 +1,177 @@
-# 🌸 **kirbs.pomodoro** - THE EASIEST FOCUS TIMER!
+# 🌸 kirbs.pomodoro
 
-<div align="center">
+> Cosmic focus timer for Pilot avsn17. Terminal-based Pomodoro with Kirby energy, galactic ranks, and local music control.
 
-## 🍄 **[🌸 CLICK HERE FOR INTERACTIVE MANUAL!](https://github.com/avsn17/kirbs.pomodoro/blob/kirbs/manual.html)** 🍄
+---
 
+## 🚀 Quick Start
 
-#!/bin/bash
-
-# 🌸🍄 KIRBY + MARIO - ONE SCRIPT TO RULE THEM ALL! 🍄🌸
-# JUST PASTE THIS WHOLE THING AND PRESS ENTER!
-
-set -e
-
-# Colors
-PINK='\033[38;5;213m'
-RED='\033[38;5;196m'
-GREEN='\033[38;5;082m'
-YELLOW='\033[38;5;226m'
-BLUE='\033[38;5;117m'
-PURPLE='\033[38;5;141m'
-NC='\033[0m'
-
-# Clear and show banner
-clear
-echo -e "${PURPLE}"
-cat << "EOF"
-╔══════════════════════════════════════════╗
-║  🌸  KIRBS.POMODORO - COMPLETE SETUP  🌸 ║
-║  🍄  JUST enjoy the journey k.?       🍄 ║
-╚══════════════════════════════════════════╝
-
-
-
-</div>
-
-## 🚀 3 SECOND START
 ```bash
 git clone https://github.com/avsn17/kirbs.pomodoro
 cd kirbs.pomodoro
-pip install -r requirements.txt
-./poyo
+pip install -r requirements.txt  # if applicable
+python3 pomodoro_timer.py
+```
+
+Afterwards:
+```bash
+poyo
+```
 
 
-###🆘 QUICK FIXES
-Problem	Fix
-poyo not found	chmod +x poyo
-No widget	brew install python-tk
-No music	brew install mpv
+****
+## 📁 Files
 
-🌐 LINKS
-🌸 CUTE MANUAL: https://effective-waffle-x57p9gr566j926vjw-8080.app.github.dev/
+| File | Description |
+|------|-------------|
+| `pomodoro_timer.py` | Main terminal Pomodoro timer |
+| `kirby_desktop.py` | Floating Kirby desktop widget (tkinter) |
+| `kirby_notify.py` | Cross-platform desktop notifications |
+| `local_vibe.py` | Local music controller (mpv) with signal watcher |
+| `music_satellite.py` | Background signal listener for music autoplay |
+
+---
+
+## ⌨️ Controls
+
+| Key | Action |
+|-----|--------|
+| `Space` | Pause / Resume |
+| `C` | Open Wisdom Chat |
+| `S` | Show Stats Leaderboard |
+| `A` | Kirby Config / Settings |
+| `M` | Toggle Music (writes signal to `music_signal.txt`) |
+| `O` | Change Background Color |
+| `N` | Save & Start New Session |
+| `Q` | Save & Quit |
+
+---
+
+## 📊 Galactic Ranking System
+
+| Distance | Rank |
+|----------|------|
+| 0 m | 🛸 Space Cadet |
+| 100 m | 🌙 Moon Walker |
+| 500 m | ☄️ Comet Rider |
+| 1,000 m | 🚀 Orbit Master |
+| 2,500 m | ⭐ Star Pilot |
+| 5,000 m+ | 🌌 Galactic Overlord |
+
+> 10 meters = 1 minute of focus time
+
+---
+
+## 💬 Wisdom Chat Categories
+
+Type any of these in chat to get targeted quotes:
+
+`iro` · `bronte` · `kant` · `lyrics` · `heroic` · `kirby` · `vibe` · `wisdom`
+
+Or just type anything for a random one.
+
+---
+
+## 🖥️ Desktop Widget
+
+Floating Kirby widget that reads `data/kirby_stats.json` and shows your progress live.
+
+```bash
+python3 kirby_desktop.py
+```
+
+**Features:**
+- Mood-based Kirby faces (idle, working, done, sleepy, hungry)
+- Animated bounce
+- 5 color themes (pink, blue, green, peach, lavender) — saved between sessions
+- Progress bar + session timer
+- Milestone flash celebrations at 25%, 50%, 75%, 100%
+- Right-click menu: stats popup, color change, celebrate
+
+---
+
+## 🔔 Notifications (`kirby_notify.py`)
+
+Cross-platform desktop notifications wired into the timer.
+
+```bash
+python3 kirby_notify.py                        # test
+python3 kirby_notify.py session_start 100
+python3 kirby_notify.py milestone 50
+python3 kirby_notify.py rank "⭐ Star Pilot"
+python3 kirby_notify.py session_end 100 "🚀 Orbit Master"
+```
+
+Fires automatically on:
+- Session start
+- Session end (with distance + rank)
+- Milestones (25%, 50%, 75%, 100%) *(coming soon)*
+
+---
+
+## 🎵 Local Music (`local_vibe.py`)
+
+Controls a local `mpv` music player. Hooks into the `M` key via `music_signal.txt`.
+
+```bash
+# Drop your mp3
+mkdir -p data && cp ~/music.mp3 data/focus_music.mp3
+
+# Start the signal watcher in background
+python3 local_vibe.py watch &
+
+# Then run the timer — M key controls music live
+poyo
+```
+
+**Commands:**
+
+```bash
+wid
+```
+
+```bash
+python3 local_vibe.py play
+python3 local_vibe.py pause
+python3 local_vibe.py resume
+python3 local_vibe.py stop
+python3 local_vibe.py volume 70
+python3 local_vibe.py watch    # background signal watcher
+```
 
 
-✨ WEB DASHBOARD 
-## 📋 **HOW TO USE:**
+**Signal file protocol (`music_signal.txt`):**
 
-1. **SELECT ALL** (Ctrl+A)
-2. **COPY** (Ctrl+C)
-3. **PASTE IN TERMINAL** (Ctrl+Shift+V or right-click)
-4. **PRESS ENTER**
+| Signal | Action |
+|--------|--------|
+| `PLAY_NEXT` | Start playing |
+| `STOP` | Stop playback |
+| `PAUSE` | Freeze playback |
+| `RESUME` | Resume playback |
 
-## ✨ **THAT'S IT!** The script creates:
-- `README.md` - Simple instructions with manual link
-- `manual.html` - Cute interactive manual with search
-- `MARIO_STICKER.md` - Mario memorial
+---
 
-When asked "Start server now? (y/n)" - type **y** to see your manual immediately!
+## 🌐 Web Dashboard - MANUAL
+https://effective-waffle-x57p9gr566j926vjw-8080.app.github.dev/
 
-**(◕‿◕✿) 👨 ⭐**
+---
+
+## 🛠️ Requirements
+
+- Python 3.10+
+- `mpv` (for local music): `sudo apt install mpv` / `brew install mpv`
+- `libnotify-bin` (Linux notifications): `sudo apt install libnotify-bin`
+- `tkinter` (desktop widget): usually bundled with Python
+
+---
+
+## 👾 Pilot
+
+**avsn17** — Cosmic Kirbs  
+Branch: `kirbs`
+
+---
+
+*May your productivity journey be guided by wisdom. 🌌*
+
+<img width="1024" height="559" alt="image" src="https://github.com/user-attachments/assets/7e530e07-7de2-4301-8f5a-96d135ae4341" />
