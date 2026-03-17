@@ -151,11 +151,8 @@ python3 local_vibe.py watch    # background signal watcher
 
 ---
 
-## 🌐 Web Dashboard
-
-Live Base44 app with full Kirby UI, timer, leaderboard, and wisdom chat:
-
-👉 https://app.base44.com/apps/69b68c64327ec9ecda6aa19b
+## 🌐 Web Dashboard - MANUAL
+https://effective-waffle-x57p9gr566j926vjw-8080.app.github.dev/
 
 ---
 
