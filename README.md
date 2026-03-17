@@ -13,15 +13,13 @@ pip install -r requirements.txt  # if applicable
 python3 pomodoro_timer.py
 ```
 
-Or via alias (add to `~/.zshrc` or `~/.bashrc`):
+Afterwards:
 ```bash
-echo "alias poyo='cd $(pwd) && python3 pomodoro_timer.py'" >> ~/.zshrc
-source ~/.zshrc
 poyo
 ```
 
----
 
+****
 ## 📁 Files
 
 | File | Description |
@@ -127,6 +125,11 @@ poyo
 ```
 
 **Commands:**
+
+```bash
+wid
+```
+
 ```bash
 python3 local_vibe.py play
 python3 local_vibe.py pause
@@ -135,6 +138,7 @@ python3 local_vibe.py stop
 python3 local_vibe.py volume 70
 python3 local_vibe.py watch    # background signal watcher
 ```
+
 
 **Signal file protocol (`music_signal.txt`):**
 
