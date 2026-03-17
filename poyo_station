@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# ─── THE COSMIC DICTIONARY ───
+declare -A ARTISTS=( ["lana"]="Lana Del Rey" ["beegees"]="Bee Gees" ["mj"]="Michael Jackson" ["chopin"]="Chopin" ["billie"]="Billie Eilish" ["cas"]="CAS" )
+declare -A MOODS=( ["lana"]="idle" ["beegees"]="done" ["mj"]="working" ["chopin"]="sleepy" ["billie"]="hungry" ["cas"]="idle" )
+declare -A FACES=( ["lana"]="(◕‿◕)っ" ["beegees"]="٩(◕‿◕｡)۶" ["mj"]="(ง •_•)ง" ["chopin"]="(－_－)zZ" ["billie"]="(＾་།＾)" ["cas"]="( ᵕ̈ )っ" )
+declare -A TAGS=( ["lana"]="dreamy" ["beegees"]="disco" ["mj"]="energy" ["chopin"]="calm" ["billie"]="dark" ["cas"]="soft" )
+
+sync_data() {
+    mkdir -p data
+    echo "$1 - $2" > data/now_playing.txt
+    echo "$3" > data/kirby_mood.txt
+}
+
+random_vibe() {
+    local keys=("${!ARTISTS[@]}")
+    local random_key=${keys[$RANDOM % ${#keys[@]}]}
+    handle_cmd "$random_key"
+}
+
+handle_cmd() {
+    local cmd=$1
+    if [[ -v ARTISTS[$cmd] ]]; then
+        echo "    ${FACES[$cmd]} Playing ${ARTISTS[$cmd]} [${TAGS[$cmd]}]"
+        sync_data "${ARTISTS[$cmd]}" "Cosmic Mix" "${MOODS[$cmd]}"
+    elif [[ "$cmd" == "r" || "$cmd" == "random" ]]; then
+        echo "    🎲 Rolling the star-dice..."
+        random_vibe
+    elif [[ "$cmd" == "save" ]]; then
+        ./save
+    elif [[ "$cmd" == "wid" ]]; then
+        pkill -f kirby_desktop.py
+        xvfb-run -a python3 kirby_desktop.py &
+        echo "    🔄 Widget Refreshed."
+    elif [[ "$cmd" == "q" ]]; then
+        echo "    ✨ Goodbye, Star Rider..."
+        exit 0
+    else
+        echo "    (•ө•)? Type an artist, 'r' for random, or 'save'."
+    fi
+}
+
+# ─── UI HEADER ───
+clear
+echo "    ╭──────────────────────────────────────────╮"
+echo "    │  ⭐ KIRBY'S COSMIC BASH STATION | v2.5   │"
+echo "    ╰──────────────────────────────────────────╯"
+echo "    [ Commands: lana, mj, chopin, beegees, billie, cas ]"
+echo "    [ Tools: r (random), save, wid, q (quit) ]"
+echo ""
+
+# ─── MAIN LOOP ───
+while true; do
+    read -p "    (•ᴗ•)♪ > " user_input
+    handle_cmd "$user_input"
+done
