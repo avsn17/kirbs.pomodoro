@@ -171,8 +171,3 @@ def inhale(i):
     return jsonify(ok=True)
 
 if __name__ == '__main__': app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-
-@app.route('/files/<path:filename>')
-def serve_file(filename):
-    from flask import send_from_directory
-    return send_from_directory('.', filename)

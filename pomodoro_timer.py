@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """
 ╔══════════════════════════════════════════════════╗
@@ -7,7 +6,6 @@
 ╚══════════════════════════════════════════════════╝
 """
 
-from kirby_notify import notify_session_start, notify_session_end
 import os, sys, time, json, random, threading, select, signal
 import termios, tty, shutil, re
 from datetime import datetime
@@ -127,7 +125,6 @@ def clear():
 
 
 def signal_music(state: str = "PLAY_NEXT"):
-    """Write music signal file AND print confirmation to sidebar."""
     try:
         SIGNAL_FILE.write_text(state)
     except Exception:
@@ -154,8 +151,6 @@ class CosmicPomodoro:
         self.remind_interval  = "10"
         self.session_count    = 0
         self.music_enabled    = True
-        # FIX: track a temporary status banner (text, expiry_time)
-        self._status_banner   = ("", 0.0)
         # Terminal state
         self._old_termios     = None
 
@@ -194,17 +189,6 @@ class CosmicPomodoro:
     def _user_total_distance(self) -> float:
         return self.stats.get(self.user_name, {}).get('total_distance', 0.0)
 
-    # ── Banner helper ─────────────────────────────────────────────────────────
-    def _set_banner(self, text: str, duration: float = 2.5):
-        """Show a temporary status banner on the main UI for `duration` seconds."""
-        self._status_banner = (text, time.time() + duration)
-
-    def _get_banner(self) -> str:
-        text, expiry = self._status_banner
-        if time.time() < expiry:
-            return text
-        return ""
-
     # ── Timer thread ──────────────────────────────────────────────────────────
     def _timer_loop(self):
         while self.running:
@@ -227,7 +211,6 @@ class CosmicPomodoro:
         self.running = False
         dist = (self.elapsed / 60) * METERS_PER_MINUTE
         self._add_session(dist, self.elapsed, completed=True)
-        notify_session_end(dist, get_rank(self._user_total_distance()))
         if self.music_enabled:
             signal_music("PLAY_NEXT")
 
@@ -274,13 +257,6 @@ class CosmicPomodoro:
         else:
             status_str = "⏹ STOPPED"
 
-        # FIX: append music state to status line so it's always visible
-        music_indicator = f"  {'🎵 ON' if self.music_enabled else '🔇 OFF'}"
-        status_str = status_str + music_indicator
-
-        # FIX: show temporary banner on row 9 (replaces kirby when active)
-        banner = self._get_banner()
-
         # Kirby animation: slides across row 9
         kirby_frames = ['<( " )>', '<( ´ )>', '<( ^ )>']
         kf    = kirby_frames[int(self.elapsed) % len(kirby_frames)]
@@ -307,13 +283,10 @@ class CosmicPomodoro:
                 _write_row(r, bar_str, 2)
             elif r == 7:
                 _write_row(r, status_str, 2)
-            elif r == 9:
-                if banner:
-                    # FIX: show flash banner (music toggle feedback) centered
-                    bx = max(0, (cols - len(banner)) // 2)
-                    _write_row(r, banner, bx)
-                elif self.distance_goal > 0:
-                    _write_row(r, kf, kirby_x)
+            elif r == 9 and self.distance_goal > 0:
+                _write_row(r, C['pink'] + kf + color, kirby_x)
+                # strip color codes for grid (just show kirby text)
+                _write_row(r, kf, kirby_x)
 
             # Sidebar
             if chat_col > 40:
@@ -368,14 +341,14 @@ class CosmicPomodoro:
 
     def _bot_reply(self, msg: str) -> str:
         ml = msg.lower()
-        if any(w in ml for w in ['iro', 'tea', 'uncle']):               cat = 'iro'
+        if any(w in ml for w in ['iro', 'tea', 'uncle']):            cat = 'iro'
         elif any(w in ml for w in ['bronte', 'emily', 'love', 'soul']): cat = 'bronte'
-        elif any(w in ml for w in ['kant', 'moral', 'reason']):         cat = 'kant'
+        elif any(w in ml for w in ['kant', 'moral', 'reason']):      cat = 'kant'
         elif any(w in ml for w in ['song', 'music', 'lyric', 'sing']):  cat = 'lyrics'
-        elif any(w in ml for w in ['hero', 'brave', 'courage']):        cat = 'heroic'
-        elif any(w in ml for w in ['kirby', 'poyo', 'pink']):           cat = 'kirby'
-        elif any(w in ml for w in ['vibe', 'cap', 'legend']):           cat = 'vibe'
-        else:                                                             cat = random.choice(list(QUOTES))
+        elif any(w in ml for w in ['hero', 'brave', 'courage']):     cat = 'heroic'
+        elif any(w in ml for w in ['kirby', 'poyo', 'pink']):        cat = 'kirby'
+        elif any(w in ml for w in ['vibe', 'cap', 'legend']):        cat = 'vibe'
+        else:                                                         cat = random.choice(list(QUOTES))
         return random.choice(QUOTES[cat])
 
     # ── Stats ─────────────────────────────────────────────────────────────────
@@ -433,12 +406,8 @@ class CosmicPomodoro:
                 self.session_count = 0
                 print("  🔄 Session count reset.")
             elif ch == '4':
-                # FIX: settings toggle also updates music state + writes signal
                 self.music_enabled = not self.music_enabled
-                state_str = 'ON 🎵' if self.music_enabled else 'OFF 🔇'
-                print(f"  Music: {state_str}")
-                if self.music_enabled:
-                    signal_music("PLAY_NEXT")
+                print(f"  Music: {'ON 🎵' if self.music_enabled else 'OFF 🔇'}")
             elif ch == '5':
                 self._choose_color()
         except (EOFError, KeyboardInterrupt):
@@ -502,7 +471,6 @@ class CosmicPomodoro:
                 print(f"  {C['red']}Please enter a positive integer.{C['reset']}")
 
         self._start_timer()
-        notify_session_start(self.distance_goal)
 
         # Save termios state for subscreen toggling
         self._old_termios = termios.tcgetattr(sys.stdin)
@@ -542,22 +510,9 @@ class CosmicPomodoro:
                         self._open_settings()
 
                     elif key == 'm':
-                        # FIX 1: toggle state
                         self.music_enabled = not self.music_enabled
-                        if self.music_enabled:
-                            # FIX 2: actually write the signal file when turning ON
-                            signal_music("PLAY_NEXT")
-                            banner_text = "🎵 MUSIC ON  — signal sent!"
-                        else:
-                            # FIX 3: write a STOP signal so satellite knows to stop
-                            signal_music("STOP")
-                            banner_text = "🔇 MUSIC OFF — signal sent."
-
-                        # FIX 4: show visible flash banner on screen (not just sidebar)
-                        self._set_banner(banner_text, duration=2.5)
-
-                        # FIX 5: also log to sidebar so it persists in history
-                        self.chat_messages.append(banner_text)
+                        self.chat_messages.append(
+                            f"🎵 Music {'ON' if self.music_enabled else 'OFF'}")
 
                     elif key == 'o':
                         self._enter_sub()
@@ -584,7 +539,6 @@ class CosmicPomodoro:
     def _finish_screen(self):
         clear()
         dist = (self.elapsed / 60) * METERS_PER_MINUTE
-        notify_session_end(dist, get_rank(self._user_total_distance()))
         print(f"\n{C['solar']}{C['bold']}  🎉 MISSION COMPLETE! 🎉{C['reset']}")
         print(f"  {C['green']}Distance covered: {dist:.0f} m{C['reset']}")
         print(f"  {C['cosmic']}New rank:  {get_rank(self._user_total_distance())}{C['reset']}")
@@ -601,6 +555,7 @@ class CosmicPomodoro:
         except (EOFError, KeyboardInterrupt):
             ch = 'n'
         if ch == 'y':
+            # Reset state and re-run
             self.elapsed       = 0.0
             self.running       = False
             self.paused        = False
