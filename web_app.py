@@ -18,7 +18,7 @@ HTML_TEMPLATE = """
 <html>
 <head>
     <meta charset="UTF-8"><title>Kirby OS Ultimate V10</title>
-    <script src="https://cdn.jsdelivr.net"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     <style>
         :root { --poyo-pink: #ff69b4; --star-gold: #ffd700; }
         body { 
@@ -83,8 +83,8 @@ HTML_TEMPLATE = """
         </div>
     </div>
 
-    <audio id="snd-inhale" src="https://www.myinstants.com"></audio>
-    <audio id="snd-victory" src="https://www.myinstants.com"></audio>
+    <audio id="snd-inhale" src=""></audio>
+    <audio id="snd-victory" src=""></audio>
 
     <script>
         let waterSecs = 25 * 60;
