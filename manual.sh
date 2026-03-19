@@ -1,7 +1,4 @@
 #!/bin/bash
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-less "$DIR/manual.md"
-#!/bin/bash
 # 📖 kirbs.pomodoro — Manual Viewer
 # Usage: manual  (after adding alias to .bashrc)
 
@@ -13,10 +10,10 @@ BOLD='\033[1m'
 NC='\033[0m'
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-MANUAL="$DIR/manual.md"
+MANUAL="$DIR/MANUAL.md"
 
 if [[ ! -f "$MANUAL" ]]; then
-    echo -e "${PINK}❌ manual.md not found in $DIR${NC}"
+    echo -e "${PINK}❌ MANUAL.md not found in $DIR${NC}"
     echo -e "${VOID}Run: git pull origin main${NC}"
     exit 1
 fi
