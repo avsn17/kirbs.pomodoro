@@ -8,8 +8,8 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y mpv libnotify-bin && rm -rf /var/lib/apt/lists/*
 
 # Kopiere die Anforderungen und installiere sie
-COPY requirements.docker.txt .
-RUN pip install --no-cache-dir -r requirements.docker.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Kopiere den Rest des Codes
 COPY . .

@@ -29,9 +29,9 @@ docker compose up -d --build 2>/dev/null || python3 web_app.py &
 echo -e "${PINK}🖥️ Starte Desktop-Suite...${NC}"
 python3 music_player.py > logs/music.log 2>&1 &
 PID_MUSIC=$!
-python3 pomodoro_timer.py > logs/timer.log 2>&1 &
+python3 timetodime2/pomodoro_y2k.py > logs/timer.log 2>&1 &
 PID_TIMER=$!
-python3 widget.py > logs/widget.log 2>&1 &
+python3 timetodime2/kirby_widget.py > logs/widget.log 2>&1 &
 PID_WIDGET=$!
 
 echo -e "${PINK}🚀 ALLES BEREIT! (STRG+C zum Beenden)${NC}"
