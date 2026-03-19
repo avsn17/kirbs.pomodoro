@@ -6,9 +6,19 @@ app = Flask(__name__)
 DATA_FILE = 'data/kirby_stats.json'
 
 def get_data():
-    if not os.path.exists(DATA_FILE): 
+    if not os.path.exists(DATA_FILE):
         return {"tasks": [], "done_today": 0, "total_poyos": 0, "water_int": 25, "level": 1, "xp": 0}
-    with open(DATA_FILE, 'r') as f: return json.load(f)
+    with open(DATA_FILE, 'r') as f:
+        d = json.load(f)
+    today = datetime.now().strftime('%Y-%m-%d')
+    if d.get('last_date') != today:
+        d['done_today'] = 0
+        d['last_date'] = today
+        save_data(d)
+    return d
+
+def sanitize(text):
+    return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
 
 def save_data(d):
     with open(DATA_FILE, 'w') as f: json.dump(d, f)
@@ -159,7 +169,7 @@ def config():
     return jsonify(ok=True)
 @app.route('/api/add', methods=['POST'])
 def add():
-    d = get_data(); d['tasks'].append(request.json['task']); save_data(d)
+    d = get_data(); d['tasks'].append(sanitize(request.json['task'])); save_data(d)
     return jsonify(ok=True)
 @app.route('/api/inhale/<int:i>', methods=['POST'])
 def inhale(i):
