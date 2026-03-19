@@ -305,18 +305,16 @@ bash setup.sh            # Full environment setup
 bash poyo_ultimate.sh    # Launch everything at once
 ```
 
----
-
-```
-<(o-o)>  Poyo! May your sessions be focused, avsn17. 🌌
-```
----
 
 ## 👾 Pilot
 
 **avsn17** — Cosmic Kirbs  
 Branch: main
+---
 
+```
+<(o-o)>
+```
 ---
 
 *May your productivity journey be guided by wisdom. 🌌*
