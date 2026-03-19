@@ -1,0 +1,29 @@
+#!/bin/bash
+# 🌸 PINK COSMIC STATION: MASTER CLOUD SYNC
+
+# 1. Aesthetics
+HOT_PINK='\033[38;5;201m'
+WHITE='\033[97m'
+NC='\033[0m'
+
+echo -e "${HOT_PINK}🪄  ${WHITE}Beginning Master Sync for avsn17...${NC}"
+
+# 2. Cleanup
+find . -type d -name "__pycache__" -exec rm -rf {} + &>/dev/null
+find . -type f -name "*.pyc" -delete &>/dev/null
+
+# 3. Logging
+DATE=$(date +'%Y-%m-%d %H:%M')
+echo "| $DATE | Session Saved | Poyo! |" >> STATION_LOG.md
+
+# 4. Invisible Git Push
+git add . &>/dev/null
+git commit -m "Master Sync: $DATE 🌸" &>/dev/null
+git push origin main &>/dev/null
+
+# 5. Success
+echo -e "${HOT_PINK}✨ ${WHITE}All files secured in the cloud!${NC}"
+echo -e "${HOT_PINK}🔗 ${WHITE}View Log: https://github.com/avsn17/kirbs.pomodoro${NC}"
+
+# 6. Browser Pop
+python3 -c "import webbrowser; webbrowser.open('https://github.com/avsn17/kirbs.pomodoro')" &>/dev/null

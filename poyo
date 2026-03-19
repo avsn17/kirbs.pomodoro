@@ -1,0 +1,13 @@
+#!/bin/bash
+echo "⭐ Launching Cosmic Station..."
+
+# 1. Kill old stuff
+pkill -f kirby_desktop.py
+pkill -f music_player.py
+pkill -f Xvfb
+
+# 2. Start Kirby with a virtual display (so it doesn't crash)
+xvfb-run -a python3 kirby_desktop.py &
+
+# 3. Start the Music Player
+python3 music_player.py

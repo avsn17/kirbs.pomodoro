@@ -83,7 +83,7 @@ class KirbyWidget:
                                      bg=c["bg"], highlightthickness=0)
         self.bar_canvas.pack(pady=2)
         self.bar_bg   = self.bar_canvas.create_rectangle(2, 2, 118, 9,
-                                                          fill=c["accent"], outline="")
+                                                          fill=c["accent"] + "44", outline="")
         self.bar_fill = self.bar_canvas.create_rectangle(2, 2, 2, 9,
                                                           fill=c["accent"], outline="")
 
@@ -235,7 +235,7 @@ class KirbyWidget:
         self.stat_label.config(bg=c["bg"], fg=c["fg"])
         self.time_label.config(bg=c["bg"], fg=c["fg"])
         self.bar_canvas.config(bg=c["bg"])
-        self.bar_canvas.itemconfig(self.bar_bg,   fill=c["accent"])
+        self.bar_canvas.itemconfig(self.bar_bg,   fill=c["accent"] + "44")
         self.bar_canvas.itemconfig(self.bar_fill, fill=c["accent"])
 
     # ── STATS POPUP ─────────────────────────────────────────────────────────────
