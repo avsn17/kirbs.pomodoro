@@ -1,0 +1,103 @@
+name: 🌟 Kirbs Repo Health Check
+
+on:
+  push:
+    branches: [main, kirbs]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    name: 🛸 Cosmic Health Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: pip install flask --quiet
+
+      - name: 🔍 Syntax Check
+        run: |
+          FAILED=0
+          for f in $(find . -name "*.py" -not -path "./.git/*"); do
+            python3 -c "import py_compile; py_compile.compile('$f', doraise=True)" \
+              && echo "  ✅ $f" \
+              || { echo "  ❌ $f — SYNTAX ERROR"; FAILED=1; }
+          done
+          [ $FAILED -eq 0 ] || exit 1
+
+      - name: 🔍 Logic Check
+        run: |
+          python3 - <<'PYEOF'
+          import sys, json
+          issues = []
+
+          def check(filepath, token, present_is_bad, msg):
+              try:
+                  content = open(filepath).read()
+                  found = token in content
+                  if present_is_bad and found:
+                      issues.append(f"❌ {filepath}: {msg}")
+                  elif not present_is_bad and not found:
+                      issues.append(f"❌ {filepath}: {msg}")
+                  else:
+                      print(f"  ✅ {filepath}: OK")
+              except FileNotFoundError:
+                  issues.append(f"⚠️  {filepath}: file not found")
+
+          check('widget.py',         'sync_github',        True,  "broken sync_github fragment present")
+          check('widget.py',         'dream_mix',          True,  "broken dream_mix fragment present")
+          check('web_app.py',        'canvas-confetti',    False, "CDN URL fix missing")
+          check('web_app.py',        'sanitize',           False, "XSS sanitize() missing")
+          check('web_app.py',        'last_date',          False, "daily reset missing")
+          check('pomodoro_timer.py', '_session_lock',      False, "double-save lock missing")
+          check('pomodoro_timer.py', '_session_saved',     False, "session_saved flag missing")
+          check('music_player.py',   'returncode',         False, "infinite skip loop fix missing")
+          check('wid.sh',            'eval "$USER_INPUT"', True,  "eval security hole present")
+          check('poyo_ultimate.sh',  'timetodime2/',       True,  "broken timetodime2/ paths present")
+
+          try:
+              src = open('kirbs.sh').read()
+              if src.count('#!/usr/bin/env bash') > 1:
+                  issues.append("❌ kirbs.sh: duplicate script detected")
+              else:
+                  print("  ✅ kirbs.sh: OK")
+          except FileNotFoundError:
+              issues.append("⚠️  kirbs.sh: file not found")
+
+          try:
+              stats = json.load(open('data/kirby_stats.json'))
+              for key in ['tasks','done_today','total_poyos','water_int','level','xp']:
+                  if key not in stats:
+                      issues.append(f"❌ data/kirby_stats.json: missing key '{key}'")
+                  else:
+                      print(f"  ✅ kirby_stats.json: '{key}' OK")
+              if 'total_all_time' in stats:
+                  issues.append("❌ data/kirby_stats.json: stale key 'total_all_time' present")
+          except Exception as e:
+              issues.append(f"⚠️  data/kirby_stats.json: {e}")
+
+          print()
+          if issues:
+              for i in issues:
+                  print(f"::error::{i}")
+              print(f"\n🚨 {len(issues)} issue(s) found")
+              sys.exit(1)
+          else:
+              print("✅ All checks passed!")
+          PYEOF
+
+      - name: ✅ Done
+        run: |
+          echo "  ╔══════════════════════════════════════╗"
+          echo "  ║  🌟 Cosmic Repo Health: ALL CLEAR    ║"
+          echo "  ║       Pilot: avsn17 ✦ kirbs          ║"
+          echo "  ╚══════════════════════════════════════╝"
