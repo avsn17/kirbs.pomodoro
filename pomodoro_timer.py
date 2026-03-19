@@ -153,6 +153,8 @@ class CosmicPomodoro:
         self.music_enabled    = True
         # Terminal state
         self._old_termios     = None
+        self._session_lock    = __import__('threading').Lock()
+        self._session_saved   = False
 
     # ── Stats I/O ─────────────────────────────────────────────────────────────
     def _load_stats(self) -> dict:
@@ -167,6 +169,10 @@ class CosmicPomodoro:
         DATA_FILE.write_text(json.dumps(self.stats, indent=2))
 
     def _add_session(self, distance: float, duration: float, completed: bool = True):
+        with self._session_lock:
+            if self._session_saved:
+                return
+            self._session_saved = True
         u = self.user_name
         if u not in self.stats:
             self.stats[u] = {
@@ -490,12 +496,14 @@ class CosmicPomodoro:
 
                     elif key == 'q':
                         dist = (self.elapsed / 60) * METERS_PER_MINUTE
+                        self._session_saved = False
                         self._add_session(dist, self.elapsed, completed=False)
                         self.running = False
                         break
 
                     elif key == 'n':
                         dist = (self.elapsed / 60) * METERS_PER_MINUTE
+                        self._session_saved = False
                         self._add_session(dist, self.elapsed, completed=False)
                         self.running = False
                         break
@@ -556,10 +564,11 @@ class CosmicPomodoro:
             ch = 'n'
         if ch == 'y':
             # Reset state and re-run
-            self.elapsed       = 0.0
-            self.running       = False
-            self.paused        = False
-            self.chat_messages = []
+            self.elapsed        = 0.0
+            self.running        = False
+            self.paused         = False
+            self.chat_messages  = []
+            self._session_saved = False
             self.run()
         else:
             print(f"\n  {C['cosmic']}👋 Fly safe, {self.user_name}. The stars await. 🌌{C['reset']}\n")
