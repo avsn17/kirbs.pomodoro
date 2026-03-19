@@ -189,6 +189,87 @@
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  <( ^ )>  Poyo! May your sessions be focused, avsn17. 🌌
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  📋 FULL COMMANDS OVERVIEW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  kirbs.sh  (launch menu)
+  ─────────────────────────────────────────────────────────
+    1      Timer only
+    2      Timer + Music Player
+    3      Widget only
+    4      Music Player only
+    5      Install dependencies (yt-dlp, ffmpeg, mpv)
+    h      Show all commands (this overview)
+    q      Quit
+
+  pomodoro_timer.py  (keys during a session)
+  ─────────────────────────────────────────────────────────
+    Space  Pause / Resume
+    N      Save & start new session
+    Q      Save & quit
+    C      Open Wisdom Chat
+    S      Stats leaderboard
+    A      Settings / Kirby Config
+    M      Toggle music autoplay
+    O      Change background color
+    H      Show help screen
+
+  Wisdom Chat categories  (press C, then type keyword)
+  ─────────────────────────────────────────────────────────
+    iro      Uncle Iroh quotes
+    bronte   Emily Brontë quotes
+    kant     Immanuel Kant quotes
+    lyrics   MJ · Lana · Bee Gees · Billie · Bowie · CAS
+    heroic   Classic heroic quotes
+    kirby    Kirby says poyo
+    vibe     Gen-Z energy
+    wisdom   General wisdom
+    back     Return to session
+    (anything else = random category)
+
+  music_player.py  (commands at the prompt)
+  ─────────────────────────────────────────────────────────
+    lana     Play Lana Del Rey
+    beegees  Play Bee Gees
+    mj       Play Michael Jackson
+    chopin   Play Chopin
+    billie   Play Billie Eilish
+    cas      Play CAS
+    p        Play current track
+    n        Next track
+    b        Previous track
+    r        Random track
+    s        Stop
+    l        Show full playlist
+    h        Show history
+    h/help   Show help
+    q        Quit + stop music
+    (1-27)   Play track by number
+
+  wid.sh  (Pink Station commands)
+  ─────────────────────────────────────────────────────────
+    save     Commit & push to GitHub
+    next     Skip to next music track
+    help     Show help
+    exit     Exit the station
+
+  kirby_notify.py  (run directly for testing)
+  ─────────────────────────────────────────────────────────
+    python3 kirby_notify.py session_start 100
+    python3 kirby_notify.py milestone 50
+    python3 kirby_notify.py rank "⭐ Star Pilot"
+    python3 kirby_notify.py session_end 100 "🚀 Orbit Master"
+
+  utility scripts
+  ─────────────────────────────────────────────────────────
+    bash kirby_backup.sh     Run a manual backup
+    bash start_poyo.sh       Start web dashboard in background
+    bash setup.sh            Full environment setup
+    bash poyo_ultimate.sh    Launch everything at once
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  <(o-o)>  Poyo! May your sessions be focused, avsn17. 🌌
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
