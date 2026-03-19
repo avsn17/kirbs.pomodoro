@@ -244,33 +244,3 @@ class CosmicWidget:
 
 if __name__ == "__main__":
     CosmicWidget().run()
-
-    import os, sys, time, json, random, signal, subprocess
-from pathlib import Path
-from datetime import datetime
-
-# CONFIG for avsn17
-REPO_PATH = Path('/workspaces/timetodime2')
-SIGNAL_FILE = REPO_PATH / 'music_signal.txt'
-
-def sync_github(state):
-    """Auto-syncs session to GitHub for stats"""
-    try:
-        os.chdir(REPO_PATH)
-        subprocess.run(["git", "pull", "origin", "main", "--rebase", "--autostash"], capture_output=True)
-        SIGNAL_FILE.write_text(state)
-        subprocess.run(["git", "add", "music_signal.txt"], capture_output=True)
-        subprocess.run(["git", "commit", "-m", f"avsn17 Session: {state} at {datetime.now()}"], capture_output=True)
-        subprocess.run(["git", "push", "origin", "main"], capture_output=True)
-     dream_mix = [
-        "ytdl://ytsearch10:Michael Jackson Thriller Original",
-        "ytdl://ytsearch10:Lana Del Rey Born to Die Original",
-        "ytdl://ytsearch10:Cigarettes After Sex Apocalypse Original",
-        "ytdl://ytsearch10:Bee Gees Stayin Alive Original",
-        "ytdl://ytsearch10:Billie Eilish Bad Guy Original",
-        "ytdl://ytsearch10:Chopin Nocturnes Original"
-    ]
-    if state == "toggle":
-        subprocess.Popen(["mpv", "--no-video", "--shuffle"] + dream_mix, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
-# ... (Keep the rest of your existing CosmicWidget class and UI code here) ...

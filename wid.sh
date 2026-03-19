@@ -59,5 +59,5 @@ while true; do
         continue
     fi
 
-    eval "$USER_INPUT"
+    echo -e "\033[91m  Unknown command: $USER_INPUT\n  Try: save, next, exit\033[0m"
 done
