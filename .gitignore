@@ -8,3 +8,11 @@ music_history.json
 .vercel
 .env*.local
 node_modules/
+
+music_signal.txt
+data/kirby_mood.txt
+data/now_playing.txt
+__pycache__/
+*.pyc
+*.bak
+FETCH_HEAD

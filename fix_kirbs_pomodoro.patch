@@ -1,0 +1,79 @@
+From 333d98b47e9259c5857a9b93e2dfaa6c1d297a69 Mon Sep 17 00:00:00 2001
+From: Claude <fix@claude.ai>
+Date: Wed, 18 Mar 2026 15:45:43 +0000
+Subject: [PATCH] fix: remove broken sync_github fragment from widget.py, fix
+ cdn/audio URLs in web_app.py
+
+---
+ web_app.py |  6 +++---
+ widget.py  | 32 +-------------------------------
+ 2 files changed, 4 insertions(+), 34 deletions(-)
+
+diff --git a/web_app.py b/web_app.py
+index 1477586..810ff7b 100644
+--- a/web_app.py
++++ b/web_app.py
+@@ -18,7 +18,7 @@ HTML_TEMPLATE = """
+ <html>
+ <head>
+     <meta charset="UTF-8"><title>Kirby OS Ultimate V10</title>
+-    <script src="https://cdn.jsdelivr.net"></script>
++    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+     <style>
+         :root { --poyo-pink: #ff69b4; --star-gold: #ffd700; }
+         body { 
+@@ -83,8 +83,8 @@ HTML_TEMPLATE = """
+         </div>
+     </div>
+ 
+-    <audio id="snd-inhale" src="https://www.myinstants.com"></audio>
+-    <audio id="snd-victory" src="https://www.myinstants.com"></audio>
++    <audio id="snd-inhale" src=""></audio>
++    <audio id="snd-victory" src=""></audio>
+ 
+     <script>
+         let waterSecs = 25 * 60;
+diff --git a/widget.py b/widget.py
+index b8c8907..d1dc3aa 100644
+--- a/widget.py
++++ b/widget.py
+@@ -243,34 +243,4 @@ class CosmicWidget:
+ 
+ 
+ if __name__ == "__main__":
+-    CosmicWidget().run()
+-
+-    import os, sys, time, json, random, signal, subprocess
+-from pathlib import Path
+-from datetime import datetime
+-
+-# CONFIG for avsn17
+-REPO_PATH = Path('/workspaces/timetodime2')
+-SIGNAL_FILE = REPO_PATH / 'music_signal.txt'
+-
+-def sync_github(state):
+-    """Auto-syncs session to GitHub for stats"""
+-    try:
+-        os.chdir(REPO_PATH)
+-        subprocess.run(["git", "pull", "origin", "main", "--rebase", "--autostash"], capture_output=True)
+-        SIGNAL_FILE.write_text(state)
+-        subprocess.run(["git", "add", "music_signal.txt"], capture_output=True)
+-        subprocess.run(["git", "commit", "-m", f"avsn17 Session: {state} at {datetime.now()}"], capture_output=True)
+-        subprocess.run(["git", "push", "origin", "main"], capture_output=True)
+-     dream_mix = [
+-        "ytdl://ytsearch10:Michael Jackson Thriller Original",
+-        "ytdl://ytsearch10:Lana Del Rey Born to Die Original",
+-        "ytdl://ytsearch10:Cigarettes After Sex Apocalypse Original",
+-        "ytdl://ytsearch10:Bee Gees Stayin Alive Original",
+-        "ytdl://ytsearch10:Billie Eilish Bad Guy Original",
+-        "ytdl://ytsearch10:Chopin Nocturnes Original"
+-    ]
+-    if state == "toggle":
+-        subprocess.Popen(["mpv", "--no-video", "--shuffle"] + dream_mix, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+-
+-# ... (Keep the rest of your existing CosmicWidget class and UI code here) ...
+\ No newline at end of file
++    CosmicWidget().run()
+\ No newline at end of file
+-- 
+2.43.0
