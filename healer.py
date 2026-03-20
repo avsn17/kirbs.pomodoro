@@ -11,7 +11,7 @@ def validate():
     
     # Prüfe ob Sound-Dateien da sind (wichtig für Offline-Vibe)
     if not os.path.exists('kirby_lowfi.mp3'):
-        print("  ⚠️ Warnung: Keine Musikdatei gefunden. Musik-Player wird stumm sein.")
+        pass  # music file optional
 
 if __name__ == "__main__":
     validate()
