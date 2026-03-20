@@ -1,0 +1,99 @@
+# .github/workflows/poyo-notify.yml
+#
+# Sends a "Kirby System" push notification to your phone/desktop
+# via ntfy.sh at the end of your CI pipeline.
+#
+# ── Setup (one-time) ───────────────────────────────────────────
+#  1. Install the ntfy app on your phone:  https://ntfy.sh
+#  2. Pick a unique topic name, e.g.  kirby-ci-yourname
+#  3. Subscribe to that topic in the app.
+#  4. Add it as a GitHub secret:
+#       Repo → Settings → Secrets → Actions → New secret
+#       Name:  NTFY_TOPIC
+#       Value: kirby-ci-yourname   (your unique topic)
+# ───────────────────────────────────────────────────────────────
+
+name: CI + Poyo Notify
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+  workflow_dispatch:
+
+jobs:
+  build-and-notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ── 2. Set up Python ─────────────────────────────────────
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # ── 3. Install dependencies ───────────────────────────────
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # ── 4. Syntax check ──────────────────────────────────────
+      # Previous version had two bugs:
+      #   BUG 1: passed ./Core (a directory) to py_compile → FileNotFoundError
+      #           Fix: -type f ensures only regular files are matched
+      #   BUG 2: searched features/ which does not exist; all .py files are at root
+      #           Fix: search from . with -maxdepth 2, no features/ assumption
+      - name: Syntax check all Python files
+        run: |
+          echo "🔍 Checking Python syntax..."
+          FAILED=0
+          while IFS= read -r -d '' pyfile; do
+            if python -m py_compile "$pyfile" 2>/dev/null; then
+              echo "  ✅ $pyfile"
+            else
+              echo "  ❌ $pyfile — SYNTAX ERROR"
+              python -m py_compile "$pyfile"
+              FAILED=1
+            fi
+          done < <(find . -maxdepth 2 -type f -name "*.py" \
+                        ! -path "./.git/*"         \
+                        ! -path "./venv/*"          \
+                        ! -path "./__pycache__/*"   \
+                        -print0)
+          if [ "$FAILED" -eq 1 ]; then
+            echo "💥 One or more files have syntax errors."
+            exit 1
+          fi
+          echo "✨ All files passed!"
+
+      # ── 5. Run tests ─────────────────────────────────────────
+      - name: Run tests
+        run: |
+          echo "🔬 Running tests..."
+          python -m pytest --tb=short || true   # remove '|| true' to fail on errors
+
+      # ── 6. Poyo! Send success notification ───────────────────
+      - name: Poyo — notify success 🎉
+        if: success()
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: |
+          python send_poyo.py
+
+      # ── 7. Poyo! Send failure notification ───────────────────
+      - name: Poyo — notify failure 💥
+        if: failure()
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: |
+          python send_poyo.py \
+            "Kirby System — BUILD FAILED" \
+            "Something went wrong! (╥_╥) Check the Actions log." \
+            4 \
+            warning
