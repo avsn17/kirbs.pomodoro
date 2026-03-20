@@ -168,7 +168,7 @@ body::after {
 #kirby-stage:hover #kirby-sprite { filter: drop-shadow(0 0 18px var(--pink)); }
 
 #kirby-sprite {
-  width: 110px; height: 110px;
+  width: 120px; height: 120px;
   object-fit: contain;
   filter: drop-shadow(0 0 10px var(--pink));
   animation: float 3.2s ease-in-out infinite;
@@ -564,8 +564,8 @@ body::after {
 
     <div id="kirby-stage" class="pixel-box" onclick="playPoyo()">
       <img id="kirby-sprite"
-           src="https://media.tenor.com/images/5d3f02f24e27dc90bbd30d72f31ad8ba/tenor.gif"
-           onerror="this.src='https://upload.wikimedia.org/wikipedia/en/3/35/Kirby_%28character%29.png'"
+           src="https://upload.wikimedia.org/wikipedia/en/3/35/Kirby_%28character%29.png"
+           onerror="this.style.display='none'"
            alt="Kirby">
       <div class="stage-label">PILOT</div>
       <div class="stage-sub">click for poyo!</div>
