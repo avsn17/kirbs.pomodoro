@@ -3,10 +3,14 @@ import json, os
 from datetime import datetime          # already imported — no need for __import__ hack
 
 app = Flask(__name__)
-DATA_FILE = 'data/kirby_stats.json'
 
-# ── Ensure the data directory always exists before any read/write ──────────────
-os.makedirs('data', exist_ok=True)
+# ── On Vercel the repo filesystem is read-only; /tmp is the only writable dir.
+#    Locally we keep using data/ so nothing changes for dev.
+_IS_VERCEL = os.environ.get('VERCEL') == '1'
+_DATA_DIR  = '/tmp' if _IS_VERCEL else 'data'
+DATA_FILE  = os.path.join(_DATA_DIR, 'kirby_stats.json')
+
+os.makedirs(_DATA_DIR, exist_ok=True)
 
 
 def get_data() -> dict:
@@ -32,7 +36,7 @@ def sanitize(t: str) -> str:
 
 
 def save_data(d: dict) -> None:
-    os.makedirs('data', exist_ok=True)           # FIX: guard before every write
+    os.makedirs(_DATA_DIR, exist_ok=True)        # FIX: guard before every write
     with open(DATA_FILE, 'w') as f:
         json.dump(d, f)
 
