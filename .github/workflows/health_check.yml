@@ -19,20 +19,48 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'          # FIX 5: match poyo-notify.yml — one Python version across all workflows
 
       - name: Install deps
-        run: pip install flask --quiet
+        run: python -m pip install flask --quiet   # FIX 4: python -m pip guarantees the right interpreter
 
+      # ── Syntax Check ─────────────────────────────────────────────────────────
+      # FIX 1: replaced `for f in $(find ...)` with `while read -d ''`
+      #        • -print0 / -d '' handles filenames with spaces correctly
+      #        • -type f excludes directories (the ./Core bug from last run)
+      # FIX 2: replaced python3 -c "py_compile.compile('$f', ...)"
+      #        • bare string interpolation breaks on spaces, quotes, backslashes
+      #        • python -m py_compile "$pyfile" is the safe, canonical form
       - name: 🔍 Syntax Check
         run: |
           FAILED=0
-          for f in $(find . -name "*.py" -not -path "./.git/*"); do
-            python3 -c "import py_compile; py_compile.compile('$f', doraise=True)" \
-              && echo "  ✅ $f" \
-              || { echo "  ❌ $f — SYNTAX ERROR"; FAILED=1; }
-          done
-          [ $FAILED -eq 0 ] || exit 1
+          while IFS= read -r -d '' pyfile; do
+            if python -m py_compile "$pyfile" 2>/dev/null; then
+              echo "  ✅ $pyfile"
+            else
+              echo "  ❌ $pyfile — SYNTAX ERROR"
+              python -m py_compile "$pyfile"
+              FAILED=1
+            fi
+          done < <(find . -type f -name "*.py" \
+                        ! -path "./.git/*"      \
+                        ! -path "./venv/*"       \
+                        ! -path "./__pycache__/*"\
+                        -print0)
+          [ "$FAILED" -eq 0 ] || exit 1
+
+      # ── Logic Check ──────────────────────────────────────────────────────────
+      # FIX 3: data/kirby_stats.json is runtime data — never committed to git.
+      #        A fresh CI checkout will always be missing it, breaking the JSON
+      #        block every run. Fix: seed a minimal valid file before the check.
+      - name: 🌱 Seed runtime data for logic checks
+        run: |
+          mkdir -p data
+          if [ ! -f data/kirby_stats.json ]; then
+            echo '{"tasks":[],"done_today":0,"total_poyos":0,"water_int":25,"level":1,"xp":0,"last_date":""}' \
+              > data/kirby_stats.json
+            echo "  🌱 Seeded data/kirby_stats.json for CI"
+          fi
 
       - name: 🔍 Logic Check
         run: |
