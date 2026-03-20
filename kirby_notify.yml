@@ -60,27 +60,15 @@ jobs:
           python send_poyo.py
 
       # ── 6. Poyo! Send failure notification ───────────────────
+      # Reuses send_poyo.py with CLI args — no duplicated logic,
+      # and no heredoc indentation pitfalls.
       - name: Poyo — notify failure 💥
         if: failure()
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: |
-          python - <<'EOF'
-          import os, urllib.request, json
-          topic = os.environ["NTFY_TOPIC"]
-          payload = json.dumps({
-              "topic": topic,
-              "title": "Kirby System — BUILD FAILED",
-              "message": "Something went wrong! (╥_╥) Check the Actions log.",
-              "priority": 4,          # high priority on ntfy
-              "tags": ["warning"]     # shows ⚠️ icon in ntfy app
-          }).encode()
-          req = urllib.request.Request(
-              f"https://ntfy.sh/{topic}",
-              data=payload,
-              headers={"Content-Type": "application/json"},
-              method="POST"
-          )
-          urllib.request.urlopen(req, timeout=10)
-          print("Failure notification sent.")
-          EOF
+          python send_poyo.py \
+            "Kirby System — BUILD FAILED" \
+            "Something went wrong! (╥_╥) Check the Actions log." \
+            4 \
+            warning
