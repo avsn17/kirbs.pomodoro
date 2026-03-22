@@ -1,52 +1,86 @@
 #!/usr/bin/env bash
-P=$'\e[38;5;207m'; C=$'\e[38;5;205m'; G=$'\e[92m'; Y=$'\e[93m'; E=$'\e[0m'; B=$'\e[1m'
+# manual.sh — kirbs.pomodoro pilot handbook
+
+P=$'\e[38;5;207m'   # pink
+C=$'\e[38;5;205m'   # light pink
+G=$'\e[92m'         # green
+Y=$'\e[93m'         # yellow
+D=$'\e[38;5;240m'   # dim
+B=$'\e[1m'          # bold
+E=$'\e[0m'          # reset
+
+divider() { echo -e "${D}  $(printf '─%.0s' {1..60})${E}"; }
+hdr()     { echo -e "\n${B}${P}  ✦ $1${E}"; divider; }
 
 clear
 echo -e "
-${P}  ~* kirbs.pomodoro — pilot handbook *~${E}
-
-${B}${C}  LAUNCH${E}
-  python3 pomodoro_timer.py     main timer
-  ./kirbs.sh                    launch menu
-  ./wid.sh                      widget + music
-  python3 widget.py             widget only
-  python3 music_player.py       music only
-
-${B}${C}  TIMER KEYS${E}
-  space       pause / resume
-  c           wisdom chat
-  s           stats leaderboard
-  a           kirby config
-  m           toggle music signal
-  o           change background colour
-  n           save + new session
-  q           save + quit
-
-${B}${C}  RANKS${E}
-  ${G}0 m${E}        🛸 Space Cadet
-  ${G}100 m${E}      🌙 Moon Walker
-  ${G}500 m${E}      ☄️  Comet Rider
-  ${G}1000 m${E}     🚀 Orbit Master
-  ${G}2500 m${E}     ⭐ Star Pilot
-  ${G}5000 m+${E}    🌌 Galactic Overlord
-
-${B}${C}  WISDOM CHAT TAGS${E}
-  iro · bronte · kant · lyrics · heroic · kirby · vibe · wisdom
-
-${B}${C}  FILES${E}
-  pomodoro_timer.py   core timer
-  widget.py           live dashboard
-  music_player.py     yt-dlp music
-  local_vibe.py       offline mp3 player
-  healer.py           system check
-  bashrc.py           shell aliases + menu
-  data/               stats + history
-  templates/          manual html
-
-${B}${C}  MUSIC${E}
-  drop an mp3 →  data/focus_music.mp3
-  or use music_player.py for youtube streaming
-
-  ${P}10 metres = 1 minute of focus. fly far, avi. 🌌${E}
+${P}  (\(\
+  (>w<)  pilot handbook
+  (ss  <3${E}
+  ${D}kirbs.pomodoro — cosmic focus system${E}
 "
+divider
+
+hdr "LAUNCH"
+echo -e "  ${C}./kirbs.sh${E}              ${D}→${E} main launch menu"
+echo -e "  ${C}./wid.sh${E}                ${D}→${E} widget + music (split pane)"
+echo -e "  ${C}python3 pomodoro_timer.py${E} ${D}→${E} timer only"
+echo -e "  ${C}python3 widget.py${E}        ${D}→${E} live dashboard"
+echo -e "  ${C}python3 music_player.py${E}  ${D}→${E} youtube music stream"
+echo -e "  ${C}python3 local_vibe.py${E}    ${D}→${E} offline mp3 player"
+echo -e "  ${C}python3 healer.py${E}        ${D}→${E} system health check"
+
+hdr "TIMER CONTROLS"
+printf "  ${Y}%-12s${E} %s\n" "space"   "pause / resume"
+printf "  ${Y}%-12s${E} %s\n" "c"       "open wisdom chat"
+printf "  ${Y}%-12s${E} %s\n" "s"       "stats leaderboard"
+printf "  ${Y}%-12s${E} %s\n" "a"       "kirby config / settings"
+printf "  ${Y}%-12s${E} %s\n" "m"       "toggle music signal"
+printf "  ${Y}%-12s${E} %s\n" "o"       "change background colour"
+printf "  ${Y}%-12s${E} %s\n" "n"       "save + start new session"
+printf "  ${Y}%-12s${E} %s\n" "q"       "save + quit"
+
+hdr "GALACTIC RANKS"
+printf "  ${G}%-10s${E} %s\n" "0 m"      "🛸  Space Cadet"
+printf "  ${G}%-10s${E} %s\n" "100 m"    "🌙  Moon Walker"
+printf "  ${G}%-10s${E} %s\n" "500 m"    "☄️   Comet Rider"
+printf "  ${G}%-10s${E} %s\n" "1,000 m"  "🚀  Orbit Master"
+printf "  ${G}%-10s${E} %s\n" "2,500 m"  "⭐  Star Pilot"
+printf "  ${G}%-10s${E} %s\n" "5,000 m+" "🌌  Galactic Overlord"
+echo -e "\n  ${D}10 metres = 1 minute of focus time${E}"
+
+hdr "WISDOM CHAT"
+echo -e "  type a tag mid-session to get targeted quotes:\n"
+printf "  ${C}%-10s${E} %s\n" "iro"    "stoic / iroha"
+printf "  ${C}%-10s${E} %s\n" "bronte" "charlotte brontë"
+printf "  ${C}%-10s${E} %s\n" "kant"   "immanuel kant"
+printf "  ${C}%-10s${E} %s\n" "lyrics" "billie / mj / bowie"
+printf "  ${C}%-10s${E} %s\n" "heroic" "epic + motivational"
+printf "  ${C}%-10s${E} %s\n" "kirby"  "kirby energy only"
+printf "  ${C}%-10s${E} %s\n" "vibe"   "lofi chill"
+printf "  ${C}%-10s${E} %s\n" "wisdom" "mixed wisdom"
+echo -e "  ${D}or just type anything for a random one${E}"
+
+hdr "MUSIC SETUP"
+echo -e "  ${B}streaming${E}  python3 music_player.py   ${D}(requires yt-dlp + ffmpeg)${E}"
+echo -e "  ${B}offline${E}    drop mp3 →  ${C}data/focus_music.mp3${E}"
+echo -e "             then run  ${C}python3 local_vibe.py play${E}"
+echo -e "\n  ${D}on session complete, music_signal.txt is written with PLAY_NEXT${E}"
+
+hdr "FILE MAP"
+printf "  ${C}%-26s${E} %s\n" "pomodoro_timer.py"   "core timer"
+printf "  ${C}%-26s${E} %s\n" "widget.py"            "live status dashboard"
+printf "  ${C}%-26s${E} %s\n" "music_player.py"      "youtube stream player"
+printf "  ${C}%-26s${E} %s\n" "local_vibe.py"        "offline mp3 controller"
+printf "  ${C}%-26s${E} %s\n" "kirby_notify.py"      "desktop notifications"
+printf "  ${C}%-26s${E} %s\n" "kirby_desktop.py"     "desktop widget"
+printf "  ${C}%-26s${E} %s\n" "healer.py"            "system health checker"
+printf "  ${C}%-26s${E} %s\n" "bashrc.py"            "shell menu + aliases"
+printf "  ${C}%-26s${E} %s\n" "volume.py"            "volume control"
+printf "  ${C}%-26s${E} %s\n" "data/"                "stats, history, music"
+printf "  ${C}%-26s${E} %s\n" "logs/"                "session logs"
+printf "  ${C}%-26s${E} %s\n" "templates/"           "manual html"
+
+divider
+echo -e "\n  ${P}fly far, avi. the galaxy is yours. 🌌${E}\n"
 read -rp "  press enter to return ~ " _
