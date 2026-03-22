@@ -585,6 +585,39 @@ function switchTab(name, btn){
 }
 
 // ── State ────────────────────────────────────────────────────────
+
+// ── Rich Notifications ───────────────────────────────────────────
+function kirbyNotify(title, opts={}){
+  if(notifPerm!=='granted') return;
+  const base={
+    icon:'https://em-content.zobj.net/source/google/387/star_2b50.png',
+    badge:'https://em-content.zobj.net/source/google/387/star_2b50.png',
+    vibrate:[200,100,200],
+    silent:false,
+    requireInteraction:false,
+    ...opts
+  };
+  if('serviceWorker' in navigator && navigator.serviceWorker.controller){
+    navigator.serviceWorker.ready.then(reg=>{
+      reg.showNotification(title, base);
+    });
+  } else {
+    // fallback — basic Notification (no actions support)
+    new Notification(title, {body:base.body, icon:base.icon, tag:base.tag});
+  }
+}
+
+// ── Service Worker registration ──────────────────────────────────
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').then(reg=>{
+    reg.addEventListener('updatefound',()=>console.log('SW updated'));
+  }).catch(()=>{});
+  navigator.serviceWorker.addEventListener('message',e=>{
+    if(e.data?.action==='snooze-water'){waterSecs=5*60;}
+    if(e.data?.action==='snooze-focus'){pomoSecs+=2*60;}
+  });
+}
+
 let waterSecs=null,waterTotal=null,notifPerm=Notification.permission;
 
 function loadWaterState(def){
@@ -680,7 +713,7 @@ setInterval(()=>{
     const v=parseInt(document.getElementById('int-val').value)||25;
     waterTotal=v*60;waterSecs=waterTotal;
     showToast('💧 WATER TIME! TRINKEN!');
-    if(notifPerm==='granted')new Notification('💧 Hydration Check!',{body:'Zeit für einen Schluck!'});
+    kirbyNotify('💧 Hydration Check!',{body:'Time for a sip! Your brain needs water to fly far.',tag:'water',renotify:true,actions:[{action:'done',title:'💧 Done!'},{action:'snooze',title:'⏰ 5 min'}]});
   }
   const m=Math.floor(waterSecs/60),sc=waterSecs%60;
   const el=document.getElementById('w-timer');
@@ -705,7 +738,7 @@ const poyos=['POYO! ✦ YOU GOT THIS!','HIII ✦ KIRBY IS CHEERING!','✦ COSMIC
 let pi=0;
 function playPoyo(){
   if(Notification.permission==='default')Notification.requestPermission().then(p=>{notifPerm=p;});
-  else if(Notification.permission==='granted')new Notification('🌟 Poyo!',{body:'Kirby glaubt an dich!'});
+  kirbyNotify('🌟 Poyo!',{body:'Kirby believes in you! The cosmos is cheering.',tag:'poyo',actions:[{action:'focus',title:'🚀 Lock In'},{action:'music',title:'🎵 Play Music'}]});
   showToast(poyos[pi++%poyos.length]);
   const s=document.getElementById('kirby-sprite');
   s.style.animation='kpoke .5s ease-out';
@@ -747,13 +780,13 @@ function pomoTick(){
     pomoIsWork=false;
     pomoSecs=(isLong?parseInt(document.getElementById('pomo-long').value):parseInt(document.getElementById('pomo-break').value))*60;
     showToast(isLong?'🎉 LONG BREAK! GREAT WORK!':'✦ BREAK TIME! REST UP!','ok');
-    if(notifPerm==='granted')new Notification(isLong?'🎉 Long Break!':'☕ Short Break!',{body:'Poyo! You earned it!'});
+    kirbyNotify(isLong?'🎉 Long Break! You earned it!':'☕ Short Break Time!',{body:isLong?'Stretch, hydrate, touch grass. Kirby is proud.':'Quick rest — you locked in hard.',tag:'break',renotify:true,actions:[{action:'done',title:'✅ Ready'},{action:'water',title:'💧 Get Water'}]});
     confetti({particleCount:60,spread:50,origin:{y:.6},colors:['#39ff6e','#00f5ff']});
   } else {
     pomoIsWork=true;
     pomoSecs=parseInt(document.getElementById('pomo-work').value)*60;
     showToast('⏱ FOCUS TIME! LOCK IN!');
-    if(notifPerm==='granted')new Notification('⏱ Back to Work!',{body:'Poyo! Let\'s go!'});
+    kirbyNotify('⏱ Focus Time!',{body:'Break over — the galaxy waits. Lock in, pilot.',tag:'focus',renotify:true,actions:[{action:'start',title:'🚀 Lets go!'},{action:'snooze',title:'⏰ 2 more min'}]});
   }
   document.getElementById('pomo-phase-num').textContent=pomoCycle+'/'+document.getElementById('pomo-count').value;
   document.getElementById('pomo-sess-display').textContent=pomoSessionsToday;
@@ -991,6 +1024,11 @@ setInterval(update,15000);
 </body>
 </html>"""
 
+
+@app.route('/sw.js')
+def sw():
+    from flask import Response
+    return Response(open('sw.js').read(), mimetype='application/javascript')
 
 @app.route('/')
 def index():
