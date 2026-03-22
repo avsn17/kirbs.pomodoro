@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string, jsonify, request
+from flask import Flask, render_template_string, jsonify, request # type: ignore
 import json, os, urllib.request, urllib.error
 from datetime import datetime
 
@@ -588,11 +588,11 @@ function switchTab(name, btn){
 let waterSecs=null,waterTotal=null,notifPerm=Notification.permission;
 
 function loadWaterState(def){
-  const s=sessionStorage.getItem('waterSecs'),at=parseInt(sessionStorage.getItem('waterSavedAt')||0);
+  const s=localStorage.getItem('waterSecs'),at=parseInt(localStorage.getItem('waterSavedAt')||0);
   if(s&&at){const rem=parseInt(s)-Math.floor((Date.now()-at)/1000);if(rem>0)return rem;}
   return def;
 }
-function saveWaterState(){if(waterSecs!==null){sessionStorage.setItem('waterSecs',waterSecs);sessionStorage.setItem('waterSavedAt',Date.now());}}
+function saveWaterState(){if(waterSecs!==null){localStorage.setItem('waterSecs',waterSecs);localStorage.setItem('waterSavedAt',Date.now());}}
 
 // ── Clock ────────────────────────────────────────────────────────
 (function tick(){
