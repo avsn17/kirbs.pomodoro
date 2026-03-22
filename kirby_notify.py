@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # kirby_notify.py — terminal + desktop notifications for kirbs.pomodoro
 
-import subprocess, sys, time, os
+import subprocess, sys, os
 
 P = "\033[38;5;207m"
 G = "\033[92m"
 Y = "\033[93m"
+D = "\033[38;5;240m"
 E = "\033[0m"
 
 def bell():
@@ -13,21 +14,21 @@ def bell():
     sys.stdout.flush()
 
 def notify(title, body, urgency="normal"):
-    """Send desktop notification via notify-send + terminal bell."""
     bell()
-    try:
-        subprocess.run([
-            "notify-send",
-            "--urgency", urgency,
-            "--expire-time", "8000",
-            "--icon", "dialog-information",
-            title, body
-        ], check=False)
-    except FileNotFoundError:
-        pass
-    # Always print to terminal too
+    # try desktop notify only if display is available
+    if os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY"):
+        try:
+            subprocess.run([
+                "notify-send", "--urgency", urgency,
+                "--expire-time", "8000",
+                "--icon", "dialog-information",
+                title, body
+            ], check=False, stderr=subprocess.DEVNULL)
+        except FileNotFoundError:
+            pass
+    # always print to terminal
     print(f"\n{P}  ✦ {title}{E}")
-    print(f"  {body}\n")
+    print(f"  {D}{body}{E}\n")
 
 def water():
     notify("💧 Hydration Check!", "Time for a sip, pilot. Your brain needs water.", "low")
@@ -50,7 +51,6 @@ def poyo(name="pilot"):
 def xp_gained(xp, total):
     notify("⭐ XP Gained!", f"+{xp} XP — Total: {total} XP", "low")
 
-# ── CLI usage ────────────────────────────────────────────────────
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "poyo"
     if cmd == "water":       water()
