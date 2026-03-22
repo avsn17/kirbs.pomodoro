@@ -217,6 +217,7 @@ class CosmicPomodoro:
         self.running = False
         dist = (self.elapsed / 60) * METERS_PER_MINUTE
         self._add_session(dist, self.elapsed, completed=True)
+        if kn: kn.session_complete(int(self.elapsed/60), get_rank(self._user_total_distance()))
         if self.music_enabled:
             signal_music("PLAY_NEXT")
 
@@ -550,6 +551,7 @@ class CosmicPomodoro:
         print(f"\n{C['solar']}{C['bold']}  🎉 MISSION COMPLETE! 🎉{C['reset']}")
         print(f"  {C['green']}Distance covered: {dist:.0f} m{C['reset']}")
         print(f"  {C['cosmic']}New rank:  {get_rank(self._user_total_distance())}{C['reset']}")
+        if kn: kn.break_start(long=False)
         print(f"\n  💡 Break tip: {random.choice(BREAK_ADVICES)}")
         print(f"\n  ✨ {random.choice(QUOTES['kirby'])}")
         if self.music_enabled:
